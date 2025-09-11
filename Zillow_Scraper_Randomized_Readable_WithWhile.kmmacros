@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+  <dict>
+    <key>Activate</key><string>Normal</string>
+    <key>CreationDate</key><real>778089831.12632704</real>
+    <key>Macros</key>
+    <array>
+      <dict>
+        <key>Actions</key>
+        <array>
+
+          <!-- ===== START / LOG INIT ===== -->
+          <dict>
+            <key>ActionUID</key><integer>6001</integer>
+            <key>MacroActionType</key><string>Log</string>
+            <key>Text</key><string>Starting ...</string>
+          </dict>
+
+          <dict>
+            <key>ActionUID</key><integer>6002</integer>
+            <key>MacroActionType</key><string>ExecuteMacro</string>
+            <key>MacroUID</key><string>7F3C2A30-7C54-4C34-9B2B-LOG-INIT-FSBO</string>
+            <key>Parameter</key><string>Starting scraper…</string>
+            <key>UseParameter</key><true/>
+          </dict>
+
+          <!-- caffeinate -->
+          <dict>
+            <key>ActionUID</key><integer>6003</integer>
+            <key>MacroActionType</key><string>ExecuteShellScript</string>
+            <key>DisplayKind</key><string>Window</string>
+            <key>Source</key><string>Nothing</string>
+            <key>Text</key><string>/usr/bin/nohup /usr/bin/caffeinate -dimsu &amp;</string>
+            <key>UseText</key><true/>
+          </dict>
+
+          <!-- init variables -->
+          <dict>
+            <key>ActionUID</key><integer>6004</integer>
+            <key>MacroActionType</key><string>SetVariableToText</string>
+            <key>Text</key><string>1</string>
+            <key>Variable</key><string>CurrentPage</string>
+          </dict>
+          <dict>
+            <key>ActionUID</key><integer>6005</integer>
+            <key>MacroActionType</key><string>SetVariableToText</string>
+            <key>Text</key><string>true</string>
+            <key>Variable</key><string>HasNextPage</string>
+          </dict>
+
+          <!-- CSV header -->
+          <dict>
+            <key>ActionUID</key><integer>6006</integer>
+            <key>MacroActionType</key><string>WriteFile</string>
+            <key>Append</key><false/>
+            <key>Destination</key><string>~/Desktop/zillow_fsbo_results.csv</string>
+            <key>Encoding</key><string>UTF8</string>
+            <key>Format</key><string>PlainText</string>
+            <key>Format2</key><string>PlainText</string>
+            <key>Source</key><string>Text</string>
+            <key>Text</key><string>Phone,Price,Address,Beds,Baths,Sqft,YearBuilt,DaysOnZillow,Views,Saves
+</string>
+          </dict>
+
+          <dict>
+            <key>ActionUID</key><integer>6007</integer>
+            <key>MacroActionType</key><string>ExecuteMacro</string>
+            <key>MacroUID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+            <key>Parameter</key><string>Wrote csv header</string>
+            <key>UseParameter</key><true/>
+          </dict>
+
+          <!-- Open Safari and Zillow -->
+          <dict>
+            <key>ActionUID</key><integer>6008</integer>
+            <key>MacroActionType</key><string>ActivateApplication</string>
+            <key>Application</key>
+            <dict>
+              <key>BundleIdentifier</key><string>com.apple.Safari</string>
+              <key>Name</key><string>Safari</string>
+              <key>NewFile</key><string>/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app</string>
+            </dict>
+            <key>AllWindows</key><true/>
+            <key>ReopenWindows</key><false/>
+          </dict>
+
+          <dict>
+            <key>ActionUID</key><integer>6009</integer>
+            <key>MacroActionType</key><string>SafariControl</string>
+            <key>Argument</key><string>https://www.zillow.com/ga/fsbo/</string>
+            <key>Command</key><string>NewWindow</string>
+            <key>WebBrowser</key><string>Safari</string>
+          </dict>
+
+          <!-- initial random pause 6.0s - 9.0s -->
+          <dict>
+            <key>ActionUID</key><integer>6010</integer>
+            <key>MacroActionType</key><string>Pause</string>
+            <key>Time</key><string>RANDOM(600,900)/100</string>
+          </dict>
+
+          <!-- WHILE HasNextPage -->
+          <dict>
+            <key>ActionUID</key><integer>6011</integer>
+            <key>MacroActionType</key><string>While</string>
+            <key>Conditions</key>
+            <dict>
+              <key>ConditionList</key>
+              <array>
+                <dict>
+                  <key>ConditionType</key><string>Variable</string>
+                  <key>Variable</key><string>HasNextPage</string>
+                  <key>VariableConditionType</key><string>Is</string>
+                  <key>VariableValue</key><string>true</string>
+                </dict>
+              </array>
+              <key>ConditionListMatch</key><string>All</string>
+            </dict>
+            <key>Actions</key>
+            <array>
+
+              <!-- read current page -->
+              <dict>
+                <key>ActionUID</key><integer>6101</integer>
+                <key>MacroActionType</key><string>ExecuteJavaScript</string>
+                <key>DisplayKind</key><string>Variable</string>
+                <key>Text</key>
+                <string><![CDATA[
+                  (function () {
+                    const params = new URLSearchParams(window.location.search);
+                    const raw = params.get("searchQueryState");
+                    let page = "";
+                    try {
+                      if (raw) {
+                        const decoded = JSON.parse(decodeURIComponent(raw));
+                        page = decoded && decoded.pagination && decoded.pagination.currentPage || "";
+                      }
+                    } catch (e) { page = ""; }
+                    kmvar.CurrentPage = String(page || "");
+                    return kmvar.CurrentPage;
+                  })();
+                ]]></string>
+                <key>UseText</key><true/>
+                <key>Variable</key><string>CurrentPage</string>
+                <key>WebBrowser</key><string>Safari</string>
+              </dict>
+
+              <dict>
+                <key>ActionUID</key><integer>6102</integer>
+                <key>MacroActionType</key><string>ExecuteMacro</string>
+                <key>MacroUID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+                <key>Parameter</key><string>Processing page %Variable%CurrentPage% - Finding all cards...</string>
+                <key>UseParameter</key><true/>
+              </dict>
+
+              <!-- discover cards -->
+              <dict>
+                <key>ActionUID</key><integer>6103</integer>
+                <key>MacroActionType</key><string>ExecuteJavaScript</string>
+                <key>DisplayKind</key><string>Variable</string>
+                <key>Text</key>
+                <string><![CDATA[
+                  (function () {
+                    const container =
+                      document.querySelector('ul.photo-cards') ||
+                      document.querySelector('[data-test="search-page-list-container"]');
+
+                    const nodes = container ? container.querySelectorAll('li.ListItem, li.exoArO, li') : [];
+                    const positions = [];
+
+                    const isAdCard = (el) => {
+                      if (el.querySelector('iframe')) return true;
+                      if (el.querySelector('[aria-label*="advertis" i], [alt*="advertis" i]')) return true;
+                      if (/\b(ad|sponsored)\b/i.test(el.textContent || '')) return true;
+                      const a = el.querySelector('a[href]');
+                      if (a && !/\/homedetails?\//i.test(a.getAttribute('href') || '')) return true;
+                      return false;
+                    };
+
+                    let outIndex = 0;
+                    Array.from(nodes).forEach((el) => {
+                      const r = el.getBoundingClientRect();
+                      if (!r.width || !r.height) return;
+                      if (isAdCard(el)) return;
+                      el.setAttribute('data-km-ix', String(outIndex));
+                      positions.push({ index: outIndex++ });
+                    });
+
+                    const payload = JSON.stringify({ totalCardsOnPage: positions.length, positions });
+                    kmvar.TotalCardsOnPage = positions.length;
+                    kmvar.PageCardData = payload;
+                    return payload;
+                  })();
+                ]]></string>
+                <key>UseText</key><true/>
+                <key>Variable</key><string>PageCardData</string>
+                <key>WebBrowser</key><string>Safari</string>
+              </dict>
+
+              <dict>
+                <key>ActionUID</key><integer>6104</integer>
+                <key>MacroActionType</key><string>ExecuteMacro</string>
+                <key>MacroUID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+                <key>Parameter</key><string>Page %Variable%CurrentPage%: found</string>
+                <key>UseParameter</key><true/>
+              </dict>
+
+              <!-- FOR each card -->
+              <dict>
+                <key>ActionUID</key><integer>6105</integer>
+                <key>MacroActionType</key><string>For</string>
+                <key>Variable</key><string>CurrentCardIndex</string>
+                <key>Collections</key>
+                <dict>
+                  <key>CollectionList</key>
+                  <array>
+                    <dict>
+                      <key>CollectionType</key><string>Range</string>
+                      <key>StartExpression</key><string>1</string>
+                      <key>EndExpression</key><string>TotalCardsOnPage - 1</string>
+                      <key>Upwards</key><true/>
+                    </dict>
+                  </array>
+                </dict>
+                <key>Actions</key>
+                <array>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6201</integer>
+                    <key>MacroActionType</key><string>ExecuteMacro</string>
+                    <key>MacroUID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+                    <key>Parameter</key><string>About to process card %Variable%CurrentCardIndex%</string>
+                    <key>UseParameter</key><true/>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6202</integer>
+                    <key>MacroActionType</key><string>Pause</string>
+                    <key>Time</key><string>RANDOM(25,70)/100</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6203</integer>
+                    <key>MacroActionType</key><string>ExecuteJavaScript</string>
+                    <key>DisplayKind</key><string>None</string>
+                    <key>Text</key>
+                    <string><![CDATA[
+                      (function () {
+                        const log = (...a) => console.log("Agent : CLICK3 :", ...a);
+                        const idx0 = (parseInt(kmvar.CurrentCardIndex, 10) || 1) - 1;
+                        if (document.querySelector('[data-testid="close-lightbox-button"]')) return "MODAL_ALREADY_OPEN";
+                        let tile =
+                          document.querySelector(`ul.photo-cards li[data-km-ix="${idx0}"]`) ||
+                          document.querySelector(`[data-km-ix="${idx0}"]`);
+                        if (!tile) {
+                          const container = document.querySelector('ul.photo-cards');
+                          const nodes = container ? Array.from(container.querySelectorAll('li.ListItem, li.exoArO')) : [];
+                          tile = nodes.find(el => el.getAttribute('data-km-ix') === String(idx0)) || null;
+                        }
+                        if (!tile) return "NO_TILE";
+                        tile.scrollIntoView({ block: "center", inline: "center", behavior: "instant" });
+                        const r = tile.getBoundingClientRect();
+                        const linkSelectors = [
+                          'a[href*="/homedetails/"]',
+                          '[data-testid="property-card-link"]',
+                          '[data-test="property-card-link"]',
+                          'a.StyledPropertyCardPhoto',
+                          'a.StyledPropertyCardDataArea',
+                          'a[href]'
+                        ];
+                        let link = null;
+                        for (const sel of linkSelectors) {
+                          const cand = tile.querySelector(sel);
+                          if (!cand) continue;
+                          if (sel === 'a[href]' && !/\/homedetails?\//.test(cand.getAttribute('href') || '')) continue;
+                          link = cand; break;
+                        }
+                        if (link) { link.click(); return "OK_LINK"; }
+                        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+                        const target = document.elementFromPoint(cx, cy) || tile;
+                        const opts = { bubbles: true, cancelable: true, view: window };
+                        target.dispatchEvent(new MouseEvent('mousedown', opts));
+                        target.dispatchEvent(new MouseEvent('mouseup',   opts));
+                        target.dispatchEvent(new MouseEvent('click',     opts));
+                        return "OK_FALLBACK";
+                      })();
+                    ]]></string>
+                    <key>UseText</key><true/>
+                    <key>WebBrowser</key><string>Safari</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6204</integer>
+                    <key>MacroActionType</key><string>ExecuteJavaScript</string>
+                    <key>DisplayKind</key><string>Variable</string>
+                    <key>Text</key>
+                    <string><![CDATA[
+                      (function () {
+                        const modal =
+                          document.querySelector('[data-testid="close-lightbox-button"]')?.closest('section,[role=dialog],.layout-container-desktop') ||
+                          document.querySelector('[data-testid="lightbox"]') ||
+                          document.querySelector('.layout-container-desktop');
+                        if (!modal) { kmvar.ModalReady = "0"; return "0"; }
+                        const hasAddress = !!modal.querySelector('[data-testid="home-details-summary-headline"], .ds-address-container, header h1, h1');
+                        const hasPrice   = !!modal.querySelector('[data-testid="price"], [data-test="property-price"], .ds-price, .StyledPrice');
+                        const text       = modal.innerText || '';
+                        const hasFSBO    = /Listed by[: ]*Property Owner/i.test(text) || /\b\(?\d{3}\)?[ .-]?\d{3}[ .-]?\d{4}\b/.test(text);
+                        const ok = hasAddress && (hasPrice || hasFSBO) ? "1" : "0";
+                        kmvar.ModalReady = ok; return ok;
+                      })();
+                    ]]></string>
+                    <key>UseText</key><true/>
+                    <key>Variable</key><string>ModalReady</string>
+                    <key>WebBrowser</key><string>Safari</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6205</integer>
+                    <key>MacroActionType</key><string>PauseUntil</string>
+                    <key>Conditions</key>
+                    <dict>
+                      <key>ConditionList</key>
+                      <array>
+                        <dict>
+                          <key>ConditionType</key><string>Variable</string>
+                          <key>Variable</key><string>ModalReady</string>
+                          <key>VariableConditionType</key><string>Is</string>
+                          <key>VariableValue</key><string>1</string>
+                        </dict>
+                      </array>
+                      <key>ConditionListMatch</key><string>All</string>
+                    </dict>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6206</integer>
+                    <key>MacroActionType</key><string>Pause</string>
+                    <key>Time</key><string>RANDOM(350,550)/100</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6207</integer>
+                    <key>MacroActionType</key><string>ExecuteJavaScript</string>
+                    <key>DisplayKind</key><string>Variable</string>
+                    <key>Text</key>
+                    <string><![CDATA[
+                      (function () {
+                        kmvar.PhoneNumber   = "";
+                        kmvar.PropertyPrice = "";
+                        kmvar.Address       = "";
+                        const modal =
+                          document.querySelector('[data-testid="close-lightbox-button"]')?.closest('section,[role=dialog],.layout-container-desktop') ||
+                          document.querySelector('[data-testid="lightbox"]') ||
+                          document.querySelector('.layout-container-desktop') || document;
+                        const norm=s=>(s||"").replace(/\s+/g," ").trim();
+                        const first=(re,s)=>{const m=(s||"").match(re); return m?(m[1]??m[0]):"";};
+                        const pickText=(scope,sels)=>{for(const sel of sels){const el=scope.querySelector(sel);if(el&&el.innerText)return el.innerText.trim();}return "";};
+                        let address=pickText(modal,['[data-testid="home-details-summary-headline"]','.ds-address-container','header h1','h1']);
+                        if(!address||!/,\s*[A-Z]{2}\s*\d{5}/.test(address)){address=first(/([^\n]+,\s*[A-Z]{2}\s*\d{5}(?:-\d{4})?)/,modal.innerText||"");}
+                        address=norm(address);
+                        let price=pickText(modal,['[data-testid="price"]','[data-test="property-price"]','.ds-price','.StyledPrice']);
+                        if(!price) price=first(/\$\d{1,3}(?:,\d{3})+(?!\s*(?:\/|per)?\s*mo)/i,modal.innerText||"");
+                        price=price?price.replace(/\s+/g,""):"";
+                        let phone=first(/Listed by[: ]*Property Owner.*?(\(?\d{3}\)?[ .\-]*\d{3}[ .\-]*\d{4})/si,modal.innerText||"");
+                        if(!phone) phone=first(/\b(\(?\d{3}\)?[ .\-]*\d{3}[ .\-]*\d{4})\b/,modal.innerText||"");
+                        const digits=(phone||"").replace(/\D+/g,"");
+                        if(digits.length===10){phone=`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;}
+                        kmvar.PhoneNumber=phone||""; kmvar.PropertyPrice=price||""; kmvar.Address=address||"";
+                        const csvEscape=(s)=>`"${String(s??"").replace(/"/g,'""')}"`;
+                        const row=[kmvar.PhoneNumber,kmvar.PropertyPrice,kmvar.Address].map(csvEscape).join(',')+"\n";
+                        kmvar.CSVRow=row; return row;
+                      })();
+                    ]]></string>
+                    <key>UseText</key><true/>
+                    <key>Variable</key><string>CSVRow</string>
+                    <key>WebBrowser</key><string>Safari</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6208</integer>
+                    <key>MacroActionType</key><string>Pause</string>
+                    <key>Time</key><string>RANDOM(40,110)/100</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6209</integer>
+                    <key>MacroActionType</key><string>WriteFile</string>
+                    <key>Append</key><true/>
+                    <key>Destination</key><string>~/Desktop/zillow_fsbo_results.csv</string>
+                    <key>Encoding</key><string>UTF8</string>
+                    <key>Format</key><string>PlainText</string>
+                    <key>Format2</key><string>PlainText</string>
+                    <key>Source</key><string>Text</string>
+                    <key>Text</key><string>%Variable%CSVRow%</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6210</integer>
+                    <key>MacroActionType</key><string>ExecuteMacro</string>
+                    <key>MacroUID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+                    <key>Parameter</key><string>Wrote: %Variable%CSVRow%</string>
+                    <key>UseParameter</key><true/>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6211</integer>
+                    <key>MacroActionType</key><string>SimulateKeystroke</string>
+                    <key>KeyCode</key><integer>53</integer>
+                    <key>Modifiers</key><integer>0</integer>
+                    <key>ReleaseAll</key><false/>
+                    <key>TargetingType</key><string>Front</string>
+                  </dict>
+
+                  <dict>
+                    <key>ActionUID</key><integer>6212</integer>
+                    <key>MacroActionType</key><string>Pause</string>
+                    <key>Time</key><string>RANDOM(25,50)/100</string>
+                  </dict>
+
+                </array>
+              </dict>
+
+              <!-- pagination -->
+              <dict>
+                <key>ActionUID</key><integer>6106</integer>
+                <key>MacroActionType</key><string>Log</string>
+                <key>Text</key><string>going to next page</string>
+              </dict>
+
+              <dict>
+                <key>ActionUID</key><integer>6107</integer>
+                <key>MacroActionType</key><string>ExecuteJavaScript</string>
+                <key>DisplayKind</key><string>None</string>
+                <key>Text</key>
+                <string><![CDATA[
+                  (function () {
+                    const container = document.querySelector('div.search-pagination');
+                    const next = container ? container.querySelector('a[rel="next"]') : null;
+                    if (next) { next.click(); kmvar.HasNextPage = "true"; }
+                    else { kmvar.HasNextPage = "false"; }
+                    return kmvar.HasNextPage;
+                  })();
+                ]]></string>
+                <key>UseText</key><true/>
+                <key>WebBrowser</key><string>Safari</string>
+              </dict>
+
+              <dict>
+                <key>ActionUID</key><integer>6108</integer>
+                <key>MacroActionType</key><string>ExecuteMacro</string>
+                <key>MacroUID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+                <key>Parameter</key><string>[%Variable%HasNextPage%] → %Variable%HasNextPage% == true ? "moved to next page" : "no more pages"</string>
+                <key>UseParameter</key><true/>
+              </dict>
+
+            </array>
+          </dict>
+
+          <!-- cleanup -->
+          <dict>
+            <key>ActionUID</key><integer>6012</integer>
+            <key>MacroActionType</key><string>ExecuteShellScript</string>
+            <key>DisplayKind</key><string>Window</string>
+            <key>Source</key><string>Nothing</string>
+            <key>Text</key><string>/usr/bin/killall caffeinate &gt;/dev/null 2&gt;&amp;1 || true</string>
+            <key>UseText</key><true/>
+          </dict>
+
+          <dict>
+            <key>ActionUID</key><integer>6013</integer>
+            <key>MacroActionType</key><string>ExecuteMacro</string>
+            <key>MacroUID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+            <key>Parameter</key><string>finished.</string>
+            <key>UseParameter</key><true/>
+          </dict>
+
+        </array>
+
+        <key>Name</key><string>WORKING - Zill FSBO Grid Detection By Chat (Readable, Randomized)</string>
+        <key>UID</key><string>1D4941CC-0DDD-4AE7-B0C5-542C40FE2660</string>
+        <key>Triggers</key>
+        <array>
+          <dict>
+            <key>FireType</key><string>Pressed</string>
+            <key>KeyCode</key><integer>40</integer>
+            <key>MacroTriggerType</key><string>HotKey</string>
+            <key>Modifiers</key><integer>768</integer>
+          </dict>
+        </array>
+      </dict>
+    </array>
+    <key>Name</key><string>Zillow Scraper</string>
+    <key>ToggleMacroUID</key><string>D179563E-000C-4254-907B-1E380D7B1106</string>
+    <key>UID</key><string>CB67E10F-099E-4E5A-92B4-CF6A27543C24</string>
+  </dict>
+</array>
+</plist>
