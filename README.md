@@ -70,13 +70,13 @@ These can be found in the `FSBO_Logging_Pack.kmmacros` file in this repository.
 ### Step 2: Import Main Macro
 1. Double-click the macro file to import:
    ```bash
-   open "Zillow_Scraper_Randomized_Readable_WithWhile.kmmacros"
+   open "Zillow_FSBO_Tool.kmmacros"
    ```
 
 2. Or manually import in Keyboard Maestro:
    - Open Keyboard Maestro Editor
    - File → Import Macros...
-   - Select `Zillow_Scraper_Randomized_Readable_WithWhile.kmmacros`
+   - Select `Zillow_FSBO_Tool.kmmacros`
 
 ### Step 3: Configure Permissions
 1. **System Preferences → Security & Privacy → Privacy**
@@ -85,7 +85,7 @@ These can be found in the `FSBO_Logging_Pack.kmmacros` file in this repository.
 
 ### Step 4: Verify Installation
 1. Open Keyboard Maestro Editor
-2. Look for "WORKING - Zill FSBO Grid Detection By Chat (Readable, Randomized)" macro
+2. Look for "Zillow FSBO Tool" macro
 3. Check that all dependency macros are present and enabled
 
 ## ⚙️ Configuration
