@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><array><dict>
+  <key>Name</key><string>FSBO Logging</string>
+  <key>UID</key><string>F8E6D2C1-6B91-4F9C-9F10-LOGPACK-0001</string>
+  <key>Macros</key><array>
+
+    <!-- FSBO: Init Logging -->
+    <dict>
+      <key>Name</key><string>FSBO: Init Logging</string>
+      <key>UID</key><string>7F3C2A30-7C54-4C34-9B2B-LOG-INIT-FSBO</string>
+      <key>Triggers</key><array><dict>
+        <key>MacroTriggerType</key><string>StatusMenu</string>
+      </dict></array>
+      <key>Actions</key><array>
+
+        <!-- Set FSBO_LogFile to a dated file on Desktop/zillow_logs -->
+        <dict>
+          <key>MacroActionType</key><string>SetVariableToText</string>
+          <key>Variable</key><string>FSBO_LogFile</string>
+          <key>Text</key>
+          <string>%LongUserName%/Desktop/zillow_logs/zillow_%ICUDateTime%yyyy-MM-dd_HH-mm-ss%.log</string>
+        </dict>
+
+        <!-- Ensure folder exists -->
+        <dict>
+          <key>MacroActionType</key><string>ExecuteShellScript</string>
+          <key>DisplayKind</key><string>Window</string>
+          <key>UseText</key><true/>
+          <key>Text</key>
+          <string>mkdir -p "$HOME/Desktop/zillow_logs"</string>
+        </dict>
+
+        <!-- Write header -->
+        <dict>
+          <key>MacroActionType</key><string>WriteFile</string>
+          <key>Destination</key><string>%Variable%FSBO_LogFile%</string>
+          <key>Append</key><false/>
+          <key>Format</key><string>PlainText</string>
+          <key>Encoding</key><string>UTF-8</string>
+          <key>Text</key>
+          <string>=== FSBO RUN START %ICUDateTime%yyyy-MM-dd HH:mm:ss% ===
+CSV: %LongUserName%/Desktop/zillow_fsbo_results.csv
+Safari FSBO search: https://www.zillow.com/ga/fsbo/
+-------------------------------------------
+</string>
+        </dict>
+
+      </array>
+    </dict>
+
+    <!-- FSBO: Log Line -->
+    <dict>
+      <key>Name</key><string>FSBO: Log Line</string>
+      <key>UID</key><string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+      <key>Triggers</key><array><dict>
+        <key>MacroTriggerType</key><string>StatusMenu</string>
+      </dict></array>
+      <key>Actions</key><array>
+        <dict>
+          <key>MacroActionType</key><string>AppendToFile</string>
+          <key>Destination</key><string>%Variable%FSBO_LogFile%</string>
+          <key>Format</key><string>PlainText</string>
+          <key>Encoding</key><string>UTF-8</string>
+          <key>Text</key><string>[%ICUDateTime%HH:mm:ss%] %TriggerValue%</string>
+        </dict>
+      </array>
+    </dict>
+
+  </array>
+</dict></array></plist>
