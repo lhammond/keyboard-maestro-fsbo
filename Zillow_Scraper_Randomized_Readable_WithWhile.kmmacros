@@ -478,7 +478,7 @@
 
         </array>
 
-        <key>Name</key><string>WORKING - Zill FSBO Grid Detection By Chat (Readable, Randomized)</string>
+        <key>Name</key><string>Zillow FSBO Tool</string>
         <key>UID</key><string>1D4941CC-0DDD-4AE7-B0C5-542C40FE2660</string>
         <key>Triggers</key>
         <array>
