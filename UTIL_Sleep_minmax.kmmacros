@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+  <dict>
+    <key>Activate</key>
+    <string>Normal</string>
+    <key>CreationDate</key>
+    <real>778462000.0</real>
+    <key>Macros</key>
+    <array>
+      <dict>
+        <key>Actions</key>
+        <array>
+          <dict>
+            <key>ActionUID</key>
+            <integer>10001</integer>
+            <key>IsDisclosed</key>
+            <false/>
+            <key>MacroActionType</key>
+            <string>SetVariableToCalculation</string>
+            <key>ResultToVariable</key>
+            <false/>
+            <key>Text</key>
+            <string>ROUND(RAND() * (SleepMax - SleepMin) + SleepMin, 2)</string>
+            <key>Variable</key>
+            <string>SleepSecs</string>
+          </dict>
+          <dict>
+            <key>ActionUID</key>
+            <integer>10002</integer>
+            <key>IsDisclosed</key>
+            <false/>
+            <key>MacroActionType</key>
+            <string>Pause</string>
+            <key>Time</key>
+            <string>%Variable%SleepSecs%</string>
+            <key>TimeOutAbortsMacro</key>
+            <true/>
+          </dict>
+          <dict>
+            <key>ActionUID</key>
+            <integer>10003</integer>
+            <key>Asynchronously</key>
+            <false/>
+            <key>IsDisclosed</key>
+            <false/>
+            <key>MacroActionType</key>
+            <string>ExecuteMacro</string>
+            <key>MacroUID</key>
+            <string>9B9A7AC2-0E1F-4D37-8E19-LOG-LINE-FSBO</string>
+            <key>Parameter</key>
+            <string>sleep %Variable%SleepSecs%s</string>
+            <key>TimeOutAbortsMacro</key>
+            <true/>
+            <key>UseParameter</key>
+            <true/>
+          </dict>
+        </array>
+        <key>CreationDate</key>
+        <real>778462000.0</real>
+        <key>ModificationDate</key>
+        <real>778462000.0</real>
+        <key>Name</key>
+        <string>UTIL: Sleep (min–max sec)</string>
+        <key>Triggers</key>
+        <array/>
+        <key>UID</key>
+        <string>F0C2A6FB-A61B-4F3E-8A1A-UTIL-SLEEP-MINMAX</string>
+      </dict>
+    </array>
+    <key>Name</key>
+    <string>Zillow Scraper (Helpers)</string>
+    <key>ToggleMacroUID</key>
+    <string>0C1E9C1C-7E0A-4F0F-9469-HELPERS-TOGGLE</string>
+    <key>UID</key>
+    <string>3D7A1D58-6B77-4D7B-9A77-HELPERS-GROUP</string>
+  </dict>
+</array>
+</plist>
