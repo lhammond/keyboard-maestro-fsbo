@@ -22,7 +22,7 @@
             <key>ActionUID</key><integer>6002</integer>
             <key>MacroActionType</key><string>ExecuteMacro</string>
             <key>MacroUID</key><string>7F3C2A30-7C54-4C34-9B2B-LOG-INIT-FSBO</string>
-            <key>Parameter</key><string>Starting scraper…</string>
+            <key>Parameter</key><string>Starting tool…</string>
             <key>UseParameter</key><true/>
           </dict>
 
@@ -491,7 +491,7 @@
         </array>
       </dict>
     </array>
-    <key>Name</key><string>Zillow Scraper</string>
+    <key>Name</key><string>Zillow FSBO Tool</string>
     <key>ToggleMacroUID</key><string>D179563E-000C-4254-907B-1E380D7B1106</string>
     <key>UID</key><string>CB67E10F-099E-4E5A-92B4-CF6A27543C24</string>
   </dict>
